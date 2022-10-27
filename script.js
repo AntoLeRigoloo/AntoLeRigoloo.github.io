@@ -6,7 +6,7 @@ var scene = new THREE.Scene();
 
 
 const distance = 20;
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 1500 );
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight+100, 0.01, 1500 );
 camera.position.set(0,25,distance);
 camera.lookAt(0,25,0);
 
@@ -15,7 +15,7 @@ var renderer = new THREE.WebGLRenderer({
     alpha: true,
     antialias: true
 });
-renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setSize( window.innerWidth, window.innerHeight+100 );
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x000000, 1);
 document.body.appendChild( renderer.domElement );

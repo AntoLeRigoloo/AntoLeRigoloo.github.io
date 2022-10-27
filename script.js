@@ -35,8 +35,9 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     labelRenderer.setSize( innerWidth, innerHeight );
 }
-window.addEventListener('resize', onWindowResize, false);
-
+if (window.innerWidth > 760){
+    window.addEventListener('resize', onWindowResize, false);
+}
 
 
 

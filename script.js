@@ -32,7 +32,7 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
     let text = document.getElementById("label2");
     text.style.width = 0.7*window.innerWidth + "px";
-    renderer.setSize( window.innerWidth, heightResize;
+    renderer.setSize( window.innerWidth, heightResize);
     labelRenderer.setSize( innerWidth, innerHeight );
 }
 window.addEventListener('resize', onWindowResize, false);

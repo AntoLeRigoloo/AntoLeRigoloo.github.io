@@ -6,7 +6,7 @@ var scene = new THREE.Scene();
 
 
 const distance = 20;
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight+100, 0.01, 1500 );
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 1500 );
 camera.position.set(0,25,distance);
 camera.lookAt(0,25,0);
 
@@ -15,7 +15,7 @@ var renderer = new THREE.WebGLRenderer({
     alpha: true,
     antialias: true
 });
-renderer.setSize( window.innerWidth, window.innerHeight+100 );
+renderer.setSize( window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x000000, 1);
 document.body.appendChild( renderer.domElement );
@@ -26,13 +26,13 @@ let heightResize = window.innerHeight + 100;
 
 
 function onWindowResize() {
-    camera.aspect = window.innerWidth / heightResize;
+    camera.aspect = window.innerWidth / window.innerHeight;
     height = 2*window.innerHeight;
     container.style.height = height + "px";
     camera.updateProjectionMatrix();
     let text = document.getElementById("label2");
     text.style.width = 0.7*window.innerWidth + "px";
-    renderer.setSize( window.innerWidth, heightResize);
+    renderer.setSize( window.innerWidth, window.innerHeight);
     labelRenderer.setSize( innerWidth, innerHeight );
 }
 window.addEventListener('resize', onWindowResize, false);

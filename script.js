@@ -26,7 +26,9 @@ document.body.appendChild( renderer.domElement );
 
 
 function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    if (window.innerWidth > 760){
+        camera.aspect = window.innerWidth / window.innerHeight;
+    }
     height = 2*window.innerHeight;
     container.style.height = height + "px";
     camera.updateProjectionMatrix();
@@ -35,9 +37,8 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     labelRenderer.setSize( innerWidth, innerHeight );
 }
-if (window.innerWidth > 760){
-    window.addEventListener('resize', onWindowResize, false);
-}
+window.addEventListener('resize', onWindowResize, false);
+
 
 
 

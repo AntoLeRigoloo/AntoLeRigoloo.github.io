@@ -22,17 +22,17 @@ document.body.appendChild( renderer.domElement );
 
 
 
-
+let heightResize = window.innerHeight + 100;
 
 
 function onWindowResize() {
-    camera.aspect = window.innerWidth / (window.innerHeight+100);
+    camera.aspect = window.innerWidth / heightResize;
     height = 2*window.innerHeight;
     container.style.height = height + "px";
     camera.updateProjectionMatrix();
     let text = document.getElementById("label2");
     text.style.width = 0.7*window.innerWidth + "px";
-    renderer.setSize( window.innerWidth, (window.innerHeight+100) );
+    renderer.setSize( window.innerWidth, heightResize;
     labelRenderer.setSize( innerWidth, innerHeight );
 }
 window.addEventListener('resize', onWindowResize, false);

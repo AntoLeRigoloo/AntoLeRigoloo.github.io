@@ -38,6 +38,7 @@ let AnimationTrigger = document.getElementById('confirmButton');
 let AnimationTriggerText = document.getElementById('confirmButtonText');
 let validation = true;
 let transition = false;
+let modelLoaded = false;
 
 const manager = new THREE.LoadingManager();
 
@@ -69,6 +70,7 @@ manager.onLoad = function ( ) {
         camera.lookAt(0,35,0);
         AnimationTrigger.addEventListener('click', hello);
         validation = false;
+        modelLoaded = true;
     }
     
 };
@@ -252,7 +254,9 @@ function hello(){
 let coeff;
 function animate() {
     requestAnimationFrame( animate );  
-    mixer.update(0.005);
+    if (modelLoaded){
+        mixer.update(0.005);
+    }
     renderer.render( scene, camera );
     composer.render();
     if (transition){
@@ -266,6 +270,7 @@ function animate() {
             if (camera.position.y < 15.1){
                 transition = true;
                 go = false;
+                DisplayBar.style.display = "none";
             }
         }
     }

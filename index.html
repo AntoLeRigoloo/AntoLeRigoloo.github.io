@@ -11,6 +11,55 @@
 
 
 <body>
+    <div id="DisplayBar"class="ContainerBar">
+        <div id="ContainerProgressBar" class="ContainerLoadingBar">
+            <div id="ProgressBar"class="Bar"></div>
+        </div>
+        <span class="status" id="statusBar">starting...</span>
+        <div id="confirmButton" class="confirmButton">
+            <span id="confirmButtonText"class="confirmButtonText">Entrer</span>
+        </div>
+    </div>
+
+    <div class="headerContainer">
+        <div class="header">
+            <div class="HeaderLogo">
+                <span>HelloWorld</span>
+            </div>
+            <div class="HeaderSubject">
+                <span onclick="test();" class="Subject">Acceuil</span>
+                <span onclick="window.scrollTo({top: 0.25*window.innerHeight,behavior: 'smooth'});"class="Subject">Events</span>
+                <span onclick="window.scrollTo({top: 0.5*window.innerHeight,behavior: 'smooth'});"class="Subject">l'équipe</span>
+                <span onclick="window.scrollTo({top: 0.75*window.innerHeight,behavior: 'smooth'});"class="Subject">Sponsors</span>
+                <span onclick="window.scrollTo({top: window.innerHeight,behavior: 'smooth'});"class="Subject">Contact</span>
+
+            </div>
+            <div onclick="ToggleHamburger()"class="Hamburger">
+                <div class="HamburgerLine"></div>
+                <div class="HamburgerLine"></div>
+                <div class="HamburgerLine"></div>
+            </div>
+        </div>
+    </div>
+    <div id="menu"class="MenuHamburger">
+        <div class="OptionContainer">
+            <div onclick="console.log(123);ToggleHamburger();" class="Option">
+                <span >Acceuil</span>
+            </div>
+            <div onclick="window.scrollTo({top:0.25*window.innerHeight,behavior: 'smooth'}); ToggleHamburger();" class="Option">
+                <span>Events</span>
+            </div>
+            <div onclick="window.scrollTo({top: 0.5*window.innerHeight,behavior: 'smooth'});ToggleHamburger();" class="Option">
+                <span>L'équipe</span>
+            </div>
+            <div onclick="window.scrollTo({top: 0.75*window.innerHeight,behavior: 'smooth'});ToggleHamburger();" class="Option">
+                <span>Sponsors</span>
+            </div>
+            <div onclick="window.scrollTo({top: window.innerHeight,behavior: 'smooth'});ToggleHamburger();" class="Option">
+                <span>Contact</span>
+            </div>
+        </div>
+    </div>
     
 
 
@@ -39,6 +88,7 @@
 
 
 
+    <script src="script-test.js"></script>
 
     <script type="module" src="./script.js"></script>
 </body>

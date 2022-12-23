@@ -6,13 +6,7 @@ import { UnrealBloomPass } from './Neon/UnrealBloomPass.js';
 import { OrbitControls } from './OrbitControls.js';
 
 var scene = new THREE.Scene();
-
 const camera = new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,0.1,1000);
-let hauteur = 15;
-camera.position.set(0,hauteur,-15);
-camera.lookAt(0,hauteur,10);
-
-
 var renderer = new THREE.WebGLRenderer({
     alpha: true,
     antialias: true
@@ -22,11 +16,63 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x000D15, 1);
 document.body.appendChild( renderer.domElement );
 
-const controls = new OrbitControls( camera, renderer.domElement );
-controls.maxPolarAngle = Math.PI * 0.5;
-controls.minDistance = 10;
-controls.maxDistance = 50;
-controls.target.set(0, 10, 0);
+function test(){
+    console.log("test");
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    //let text = document.getElementById("label2");
+    //text.style.width = 0.7*window.innerWidth + "px";
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    //labelRenderer.setSize( innerWidth, innerHeight );
+}
+window.addEventListener('resize', onWindowResize, false);
+
+let ProgressBar = document.getElementById('ProgressBar');
+let DisplayBar = document.getElementById('DisplayBar');
+let status = document.getElementById('statusBar');
+let ContainerBar = document.getElementById('ContainerProgressBar');
+let AnimationTrigger = document.getElementById('confirmButton');
+let AnimationTriggerText = document.getElementById('confirmButtonText');
+let validation = true;
+let transition = false;
+
+const manager = new THREE.LoadingManager();
+
+manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+    status.textContent = itemsLoaded + ' of ' + itemsTotal + ' files.';
+};
+manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+    ProgressBar.style.width = (itemsLoaded / itemsTotal * 100) + '%';
+    status.textContent = itemsLoaded + ' of ' + itemsTotal + ' files.';
+};
+manager.onError = function ( url ) {
+    console.log( 'There was an error loading ' + url );
+};
+manager.onLoad = function ( ) {
+    //DisplayBar.style.display = "none";
+    //animate();
+    if (validation){
+        status.style.opacity = "0";
+        ContainerBar.style.opacity = '0';
+        ContainerBar.style.width = '1%';
+        AnimationTrigger.style.width = "150px";
+        AnimationTrigger.style.height = "150px";
+        AnimationTrigger.style.opacity = '1';
+        AnimationTriggerText.style.opacity = '1';
+        AnimationTriggerText.style.letterSpacing = "normal";
+        camera.position.x = 0 ;
+        camera.position.y = 35;
+        camera.position.z = -20;
+        camera.lookAt(0,35,0);
+        AnimationTrigger.addEventListener('click', hello);
+        validation = false;
+    }
+    
+};
+
 
 
 
@@ -36,18 +82,18 @@ function getRandomInt2(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-const starCount = 10000;
-const nothingAround = 50;
+const starCount = 5000;
+const nothingAround = 20;
 let starBuffer = new THREE.BufferGeometry();
 let posstar = new Float32Array(starCount * 3);
 for (let i =0; i <(starCount*3); i+=3){
-    let x = getRandomInt2(-100,100);
-    let y = getRandomInt2(-100,100);
-    let z = getRandomInt2(-100,100);
+    let x = getRandomInt2(-50,50);
+    let y = getRandomInt2(-50,50);
+    let z = getRandomInt2(-50,50);
     while ((x < nothingAround)&&(x > -nothingAround)&&(y < nothingAround)&&(y > -nothingAround)&&(z < nothingAround)&&(z > -nothingAround)){
-        x = getRandomInt2(-100,100);
-        y = getRandomInt2(-100,100);
-        z = getRandomInt2(-100,100);
+        x = getRandomInt2(-50,50);
+        y = getRandomInt2(-50,50);
+        z = getRandomInt2(-50,50);
     }
     posstar[i] = x;
     posstar[i+1] = y;
@@ -95,7 +141,7 @@ class Spring extends THREE.Mesh{
   
 
 var obj,mixer;
-var loader = new GLTFLoader();
+var loader = new GLTFLoader(manager);
 loader.load("3Dmodel/astroanim.gltf", function(gltf){
     obj = gltf.scene;
     obj.children[0].children[3].visible = false;
@@ -138,14 +184,15 @@ composer.addPass( bloomPass );
 const material = new THREE.MeshBasicMaterial( {color: 0x62BFFF,} );
 
 let radius = 5;
-let turns = 2;
+let turns = 1;
 let segmentsPerTurn = 100;
-let height = 15;
+let height = 20;
 let growth = 1;
 let spring = new Spring(radius, turns, segmentsPerTurn, height, growth, material);
 spring.update();
 scene.add(spring);
-spring.position.set(0,2,0);
+spring.position.set(0,0,0);
+spring.rotation.y = Math.PI/2;
 
 const geometry = new THREE.SphereGeometry( 1, 32, 16 );
 const material1 = new THREE.MeshBasicMaterial( { color: 0xFF48C5 } );
@@ -161,22 +208,71 @@ scene.add( sphere1 );
 scene.add( sphere2 );
 scene.add( sphere3 );
 scene.add( sphere4 );
-sphere.position.set(-14,10,6);
-sphere1.position.set(13,7,5);
-sphere2.position.set(7,12,15);
-sphere3.position.set(-8,15,-13);
-sphere4.position.set(14,7,-10);
+sphere.position.set(-14,6,10);
+sphere1.position.set(13,12,5);
+sphere2.position.set(15,8,15);
+sphere3.position.set(-15,15,-15);
+sphere4.position.set(14,7,-15);
 
+window.addEventListener('wheel', onMouseWheel)
 
+let y = 0;
+let position = 15;
+function onMouseWheel(event) {
+    y = -event.deltaY * 0.009;
+}
+let distance = 20;
 
+function updatePosition() {
+    position += y;
+    y *= 0.7;
+    if (position < 0) {
+        position = 0;
+    }
+    else if (position > 15) {
+        position = 15;
+    }
+    else{
+        camera.position.y = position;
+        let angle = 3*Math.PI*(camera.position.y/15); 
+        camera.position.x = distance * Math.sin(-angle);
+        camera.position.z = distance * Math.cos(-angle);
+        camera.lookAt(0,camera.position.y,0);
+    }
+}
+let go = false;
+function hello(){
+    //DisplayBar.style.display = "none";
+    DisplayBar.style.backgroundColor = "rgba(0, 0, 0, 0.0)";
+    AnimationTrigger.style.opacity = "0";
+
+    
+    go = true;
+}
+let coeff;
 function animate() {
     requestAnimationFrame( animate );  
     mixer.update(0.005);
-    controls.update();
     renderer.render( scene, camera );
     composer.render();
+    if (transition){
+        updatePosition();
+    }else{
+        if (go){
+            if (camera.position.y > 15){
+                coeff = camera.position.y/15;
+                camera.position.y -= 0.5* (coeff - 0.9);
+            }
+            if (camera.position.y < 15.1){
+                transition = true;
+                go = false;
+            }
+        }
+    }
+    
 }
-
 animate();
+
+
 
 

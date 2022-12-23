@@ -13,6 +13,7 @@
           overflow-x: hidden;
           /* font-family: 'Space Grotesk', sans-serif; */
           font-family: 'nasalizationregular';
+          background-color: #000D15;
       }
       canvas{
           display: block;
@@ -288,7 +289,6 @@
         align-items: center;
         flex-direction: column;
         color: white;
-        
       }
       .tp{
         

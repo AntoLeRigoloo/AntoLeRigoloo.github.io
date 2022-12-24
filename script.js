@@ -1,12 +1,13 @@
 import { GLTFLoader } from './3Dmodel/GLTFLoader.js';
-import { CSS3DRenderer, CSS3DObject } from './3Dtext/CSS3DRenderer.js';
 import { EffectComposer } from './Neon/EffectComposer.js';
 import { RenderPass } from './Neon/RenderPass.js';
 import { UnrealBloomPass } from './Neon/UnrealBloomPass.js';
-import { OrbitControls } from './OrbitControls.js';
 
 var scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,0.1,1000);
+    let distance = 20;
+    camera.position.set(0,15,-distance);
+    camera.lookAt(0,15,0);
 var renderer = new THREE.WebGLRenderer({
     alpha: true,
     //antialias: true
@@ -16,17 +17,11 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x000D15, 1);
 document.body.appendChild( renderer.domElement );
 
-function test(){
-    console.log("test");
-}
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    //let text = document.getElementById("label2");
-    //text.style.width = 0.7*window.innerWidth + "px";
     renderer.setSize( window.innerWidth, window.innerHeight );
-    //labelRenderer.setSize( innerWidth, innerHeight );
 }
 window.addEventListener('resize', onWindowResize, false);
 
@@ -36,7 +31,7 @@ let status = document.getElementById('statusBar');
 let ContainerBar = document.getElementById('ContainerProgressBar');
 let AnimationTrigger = document.getElementById('confirmButton');
 let AnimationTriggerText = document.getElementById('confirmButtonText');
-let validation = true;
+
 let transition = false;
 let modelLoaded = false;
 
@@ -53,10 +48,7 @@ manager.onError = function ( url ) {
     console.log( 'There was an error loading ' + url );
 };
 manager.onLoad = function ( ) {
-    //DisplayBar.style.display = "none";
-    //animate();
-    if (validation){
-        AnimationTrigger.addEventListener('click', hello);
+        AnimationTrigger.addEventListener('click', Animation);
         status.style.opacity = "0";
         ContainerBar.style.opacity = '0';
         ContainerBar.style.width = '1%';
@@ -65,27 +57,43 @@ manager.onLoad = function ( ) {
         AnimationTrigger.style.opacity = '1';
         AnimationTriggerText.style.opacity = '1';
         AnimationTriggerText.style.letterSpacing = "normal";
-        camera.position.x = 0 ;
-        camera.position.y = 35;
-        camera.position.z = -20;
-        camera.lookAt(0,35,0);
-        AnimationTrigger.addEventListener('mouseover', function(){
-            console.log("hover");
-            AnimationTrigger.style.width = "170px";
-            AnimationTrigger.style.height = "170px";
-        });
-        AnimationTrigger.addEventListener('mouseout', function(){
-            console.log("hover");
-            AnimationTrigger.style.width = "150px";
-            AnimationTrigger.style.height = "150px";
-        });
-
-
-        validation = false;
         modelLoaded = true;
-    }
+    
     
 };
+
+function Animation(){
+    DisplayBar.style.backgroundColor = "transparent";
+    AnimationTrigger.style.opacity = "0";
+    AnimationTrigger.style.width = "0px";
+    AnimationTrigger.style.height = "0px";
+    StartFadeOut = new Date().getTime();
+    transition = true;
+}
+
+let StartFadeOut;
+let FadeOut = false;
+
+
+function animate() {
+    requestAnimationFrame( animate );  
+    if (modelLoaded){
+        mixer.update(0.005);
+    }
+    renderer.render( scene, camera );
+    composer.render();
+    if (transition){
+        if (!FadeOut){
+            if (new Date().getTime() - StartFadeOut > 3000){
+                DisplayBar.style.display = "none";
+                FadeOut = true;
+            }
+        }
+        updatePosition();
+    }
+    
+    
+}
 
 
 
@@ -152,7 +160,14 @@ class Spring extends THREE.Mesh{
       }
     }
   }
+let spring = new Spring(5, 1, 100, 20, 1, new THREE.MeshBasicMaterial( {color: 0x62BFFF} ));
+spring.update();
+scene.add(spring);
+spring.position.set(0,0,0);
+spring.rotation.y = Math.PI/2;
   
+
+
 
 var obj,mixer;
 var loader = new GLTFLoader(manager);
@@ -164,10 +179,8 @@ loader.load("3Dmodel/astroanim.gltf", function(gltf){
     obj.position.set(0,0,0);
     scene.add(obj);
     mixer = new THREE.AnimationMixer(obj);
-    const clips = gltf.animations;
-    const clip = THREE.AnimationClip.findByName(clips, 'ArmatureAction');
-    const action = mixer.clipAction(clip.optimize());
-    action.play();
+    const clip = THREE.AnimationClip.findByName(gltf.animations, 'ArmatureAction');
+    mixer.clipAction(clip.optimize()).play();
 });
 
 
@@ -183,6 +196,7 @@ scene.add( pointLight2 );
 pointLight2.position.set( 10, 10, 10 );
 
 
+
 const renderScene = new RenderPass( scene, camera );
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = 0.5;
@@ -195,33 +209,17 @@ composer.addPass( bloomPass );
 
 
                 
-const material = new THREE.MeshBasicMaterial( {color: 0x62BFFF,} );
-
-let radius = 5;
-let turns = 1;
-let segmentsPerTurn = 100;
-let height = 20;
-let growth = 1;
-let spring = new Spring(radius, turns, segmentsPerTurn, height, growth, material);
-spring.update();
-scene.add(spring);
-spring.position.set(0,0,0);
-spring.rotation.y = Math.PI/2;
-
-const geometry = new THREE.SphereGeometry( 1, 32, 16 );
-const material1 = new THREE.MeshBasicMaterial( { color: 0xFF48C5 } );
-const sphere = new THREE.Mesh( geometry, material1 );
-const sphere1= new THREE.Mesh( geometry, material1 );
-const sphere2 = new THREE.Mesh( geometry, material1 );
-const sphere3 = new THREE.Mesh( geometry, material1 );
-const sphere4 = new THREE.Mesh( geometry, material1 );
 
 
-scene.add( sphere );
-scene.add( sphere1 );
-scene.add( sphere2 );
-scene.add( sphere3 );
-scene.add( sphere4 );
+
+
+
+const sphere = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 16 ), new THREE.MeshBasicMaterial( { color: 0xFF48C5 } ));
+const sphere1= new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 16 ), new THREE.MeshBasicMaterial( { color: 0xFF48C5 } ));
+const sphere2= new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 16 ), new THREE.MeshBasicMaterial( { color: 0xFF48C5 } ));
+const sphere3= new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 16 ), new THREE.MeshBasicMaterial( { color: 0xFF48C5 } ));
+const sphere4= new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 16 ), new THREE.MeshBasicMaterial( { color: 0xFF48C5 } ));
+scene.add( sphere, sphere1, sphere2, sphere3, sphere4 );
 sphere.position.set(-14,6,10);
 sphere1.position.set(13,12,5);
 sphere2.position.set(15,8,15);
@@ -229,12 +227,9 @@ sphere3.position.set(-15,15,-15);
 sphere4.position.set(14,7,-15);
 
 
-var touchstartX = 0;
 var touchstartY = 0;
-var touchendX = 0;
-var touchendY = 0;
-
 let y = 0;
+let position = 15;
 
 document.addEventListener('touchstart', function(event) {
     touchstartY = event.changedTouches[0].screenY;
@@ -243,10 +238,10 @@ document.addEventListener('touchstart', function(event) {
 
 document.addEventListener('touchmove', function(event) {
     if (touchstartY > event.changedTouches[0].screenY) {
-        y = (event.changedTouches[0].screenY - touchstartY) *0.07;
+        y = (event.changedTouches[0].screenY - touchstartY) *0.05;
     }
     if (touchstartY < event.changedTouches[0].screenY) {
-        y = (event.changedTouches[0].screenY - touchstartY) *0.07;
+        y = (event.changedTouches[0].screenY - touchstartY) *0.05;
     }
     touchstartY = event.changedTouches[0].screenY;
 }, false);
@@ -255,24 +250,16 @@ document.addEventListener('touchmove', function(event) {
 
 
 
-window.addEventListener('wheel', onMouseWheel)
-
-let position = 15;
-function onMouseWheel(event) {
-    console.log(event.deltaY);
+window.addEventListener('wheel', function(event) {
     y = -event.deltaY * 0.009;
-}
-let distance = 20;
+});
+
 
 function updatePosition() {
     position += y;
     y *= 0.7;
-    if (position < 0) {
-        position = 0;
-    }
-    else if (position > 15) {
-        position = 15;
-    }
+    if (position < 0) {position = 0;}
+    else if (position > 15) {position = 15;}
     else{
         camera.position.y = position;
         let angle = 3*Math.PI*(camera.position.y/15); 
@@ -281,40 +268,8 @@ function updatePosition() {
         camera.lookAt(0,camera.position.y,0);
     }
 }
-let go = false;
-function hello(){
-    DisplayBar.style.backgroundColor = "transparent";
-    AnimationTrigger.style.opacity = "0";
-    AnimationTrigger.style.width = "0px";
-    AnimationTrigger.style.height = "0px";
-    camera.position.y = 15;
-    StartFadeOut = new Date().getTime();
-    transition = true;
-}
-
-let StartFadeOut;
-let FadeOut = false;
 
 
-function animate() {
-    requestAnimationFrame( animate );  
-    if (modelLoaded){
-        mixer.update(0.005);
-    }
-    renderer.render( scene, camera );
-    composer.render();
-    if (transition){
-        if (!FadeOut){
-            if (new Date().getTime() - StartFadeOut > 3000){
-                DisplayBar.style.display = "none";
-                FadeOut = true;
-            }
-        }
-        updatePosition();
-    }
-    
-    
-}
 animate();
 
 

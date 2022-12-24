@@ -56,6 +56,7 @@ manager.onLoad = function ( ) {
     //DisplayBar.style.display = "none";
     //animate();
     if (validation){
+        AnimationTrigger.addEventListener('click', hello);
         status.style.opacity = "0";
         ContainerBar.style.opacity = '0';
         ContainerBar.style.width = '1%';
@@ -68,7 +69,6 @@ manager.onLoad = function ( ) {
         camera.position.y = 35;
         camera.position.z = -20;
         camera.lookAt(0,35,0);
-        AnimationTrigger.addEventListener('click', hello);
         AnimationTrigger.addEventListener('mouseover', function(){
             console.log("hover");
             AnimationTrigger.style.width = "170px";
@@ -79,6 +79,7 @@ manager.onLoad = function ( ) {
             AnimationTrigger.style.width = "150px";
             AnimationTrigger.style.height = "150px";
         });
+
 
         validation = false;
         modelLoaded = true;
@@ -286,12 +287,12 @@ function hello(){
     AnimationTrigger.style.opacity = "0";
     AnimationTrigger.style.width = "0px";
     AnimationTrigger.style.height = "0px";
-    transition = true;
     camera.position.y = 15;
-    setTimeout(function(){
-        DisplayBar.style.display = "none";
-    }, 3000);
+    StartFadeOut = new Date().getTime();
+    transition = true;
 }
+let StartFadeOut;
+let FadeOut = false;
 function animate() {
     requestAnimationFrame( animate );  
     if (modelLoaded){
@@ -300,6 +301,12 @@ function animate() {
     renderer.render( scene, camera );
     composer.render();
     if (transition){
+        if (!FadeOut){
+            if (new Date().getTime() - StartFadeOut > 3000){
+                DisplayBar.style.display = "none";
+                FadeOut = true;
+            }
+        }
         updatePosition();
     }
     

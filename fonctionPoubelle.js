@@ -1,3 +1,22 @@
+// if (transition){
+//     updatePosition();
+// }else{
+//     if (go){
+//         if (camera.position.y > 15){
+//             coeff = camera.position.y/15;
+//             camera.position.y -= 0.5* (coeff - 0.9);
+//         }
+//         if (camera.position.y < 15.1){
+//             transition = true;
+//             go = false;
+//             DisplayBar.style.display = "none";
+//         }
+//     }
+// }
+
+
+
+
 // function updateCamera(ev) {
 //     //turn camera around the object
 

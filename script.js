@@ -9,7 +9,7 @@ var scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,0.1,1000);
 var renderer = new THREE.WebGLRenderer({
     alpha: true,
-    antialias: true
+    //antialias: true
 });
 renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -69,6 +69,17 @@ manager.onLoad = function ( ) {
         camera.position.z = -20;
         camera.lookAt(0,35,0);
         AnimationTrigger.addEventListener('click', hello);
+        AnimationTrigger.addEventListener('mouseover', function(){
+            console.log("hover");
+            AnimationTrigger.style.width = "170px";
+            AnimationTrigger.style.height = "170px";
+        });
+        AnimationTrigger.addEventListener('mouseout', function(){
+            console.log("hover");
+            AnimationTrigger.style.width = "150px";
+            AnimationTrigger.style.height = "150px";
+        });
+
         validation = false;
         modelLoaded = true;
     }
@@ -216,11 +227,38 @@ sphere2.position.set(15,8,15);
 sphere3.position.set(-15,15,-15);
 sphere4.position.set(14,7,-15);
 
-window.addEventListener('wheel', onMouseWheel)
+
+var touchstartX = 0;
+var touchstartY = 0;
+var touchendX = 0;
+var touchendY = 0;
 
 let y = 0;
+
+document.addEventListener('touchstart', function(event) {
+    touchstartY = event.changedTouches[0].screenY;
+
+}, false);
+
+document.addEventListener('touchmove', function(event) {
+    if (touchstartY > event.changedTouches[0].screenY) {
+        y = -0.1;
+    }
+    if (touchstartY < event.changedTouches[0].screenY) {
+        y = 0.1;
+    }
+    touchstartY = event.changedTouches[0].screenY;
+}, false);
+
+
+
+
+
+window.addEventListener('wheel', onMouseWheel)
+
 let position = 15;
 function onMouseWheel(event) {
+    console.log(event.deltaY);
     y = -event.deltaY * 0.009;
 }
 let distance = 20;
@@ -244,14 +282,16 @@ function updatePosition() {
 }
 let go = false;
 function hello(){
-    //DisplayBar.style.display = "none";
     DisplayBar.style.backgroundColor = "rgba(0, 0, 0, 0.0)";
     AnimationTrigger.style.opacity = "0";
-
-    
-    go = true;
+    AnimationTrigger.style.width = "0px";
+    AnimationTrigger.style.height = "0px";
+    transition = true;
+    camera.position.y = 15;
+    setTimeout(function(){
+        DisplayBar.style.display = "none";
+    }, 3000);
 }
-let coeff;
 function animate() {
     requestAnimationFrame( animate );  
     if (modelLoaded){
@@ -261,19 +301,8 @@ function animate() {
     composer.render();
     if (transition){
         updatePosition();
-    }else{
-        if (go){
-            if (camera.position.y > 15){
-                coeff = camera.position.y/15;
-                camera.position.y -= 0.5* (coeff - 0.9);
-            }
-            if (camera.position.y < 15.1){
-                transition = true;
-                go = false;
-                DisplayBar.style.display = "none";
-            }
-        }
     }
+    
     
 }
 animate();

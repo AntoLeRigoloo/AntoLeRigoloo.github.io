@@ -243,10 +243,10 @@ document.addEventListener('touchstart', function(event) {
 
 document.addEventListener('touchmove', function(event) {
     if (touchstartY > event.changedTouches[0].screenY) {
-        y = -0.1;
+        y = -0.2;
     }
     if (touchstartY < event.changedTouches[0].screenY) {
-        y = 0.1;
+        y = 0.2;
     }
     touchstartY = event.changedTouches[0].screenY;
 }, false);

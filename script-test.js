@@ -21,3 +21,7 @@ function ToggleHamburger(){
     }
 
 }
+
+if (window.GestureEvent && !('touchAction' in document.body.style)) {
+    document.body.addEventListener('gesturestart', (e)=>{e.preventDefault()}, {passive: false, capture:true});
+  }

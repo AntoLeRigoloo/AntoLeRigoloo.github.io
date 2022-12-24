@@ -243,10 +243,10 @@ document.addEventListener('touchstart', function(event) {
 
 document.addEventListener('touchmove', function(event) {
     if (touchstartY > event.changedTouches[0].screenY) {
-        y = -0.2;
+        y = (event.changedTouches[0].screenY - touchstartY) *0.07;
     }
     if (touchstartY < event.changedTouches[0].screenY) {
-        y = 0.2;
+        y = (event.changedTouches[0].screenY - touchstartY) *0.07;
     }
     touchstartY = event.changedTouches[0].screenY;
 }, false);
@@ -283,7 +283,7 @@ function updatePosition() {
 }
 let go = false;
 function hello(){
-    DisplayBar.style.backgroundColor = "rgba(0, 0, 0, 0.0)";
+    DisplayBar.style.backgroundColor = "transparent";
     AnimationTrigger.style.opacity = "0";
     AnimationTrigger.style.width = "0px";
     AnimationTrigger.style.height = "0px";
@@ -291,8 +291,11 @@ function hello(){
     StartFadeOut = new Date().getTime();
     transition = true;
 }
+
 let StartFadeOut;
 let FadeOut = false;
+
+
 function animate() {
     requestAnimationFrame( animate );  
     if (modelLoaded){
